@@ -26,7 +26,7 @@ concept handler = requires (Fn f, std::string_view part)
 using CannotFail = std::false_type;
 
 [[gnu::flatten]]
-auto Write(std::string_view msg, handler auto&& out) noexcept {
+constexpr auto Write(std::string_view msg, handler auto&& out) noexcept {
     constexpr char toescape[] = {ESC, END, 0};
     constexpr char esc_end[] = {ESC, ESC_END, 0};
     constexpr char esc_esc[] = {ESC, ESC_ESC, 0};
@@ -67,7 +67,7 @@ enum ReadErrors {
 };
 
 [[gnu::flatten]]
-ReadErrors Read(std::string_view msg, handler auto&& out) try {
+constexpr ReadErrors Read(std::string_view msg, handler auto&& out)
     constexpr char esc[] = {ESC, 0};
     constexpr char end[] = {END, 0};
     if (msg.size() && msg.back() == END) {
@@ -105,8 +105,6 @@ ReadErrors Read(std::string_view msg, handler auto&& out) try {
         }
     }
     return NoError;
-} catch (...) {
-    return HandlerError;
 }
 
 
